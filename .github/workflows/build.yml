@@ -2,7 +2,7 @@ name: Build APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -19,10 +19,13 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: |
+          if [ -f gradlew ]; then chmod +x gradlew; fi
 
       - name: Build APK Debug
-        run: ./gradlew assembleDebug
+        run: |
+          if [ -f gradlew ]; then ./gradlew assembleDebug
+          else gradle assembleDebug; fi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
